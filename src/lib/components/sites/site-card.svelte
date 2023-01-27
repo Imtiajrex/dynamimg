@@ -13,7 +13,7 @@
 >
 	<div class="group relative md:h-44 h-52 w-full">
 		<a
-			href="/app/{id}"
+			href="/sites/{id}/editor"
 			class="flex items-center justify-center gap-2 text-white font-bold group-hover:opacity-100 opacity-0 bg-black/50 transition w-full h-full absolute cursor-pointer"
 		>
 			<Edit size={30} />

@@ -2,7 +2,7 @@
 	import { Plus } from 'tabler-icons-svelte';
 	import Button from '../button.svelte';
 	import SiteCard from './site-card.svelte';
-	const sites = [{}];
+	const sites = [{}, {}];
 </script>
 
 <div class="mt-24">
