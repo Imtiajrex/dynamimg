@@ -86,30 +86,8 @@
 	let tool = getContext('active-tool-drawer') as Writable<string | null>;
 
 	let isHovering = false;
-	let moving = false;
 	const startDrag = () => {
 		movingElement.set(hierarchy);
-	};
-	let initialMargin = {
-			top: 0,
-			left: 0
-		},
-		initialPos = { x: 0, y: 0 };
-	const moveElement = (x: number, y: number) => {
-		if (moving) {
-			style['left'] = initialMargin.left + ((x - initialPos.x) / canvasRect.width) * 100 + '%';
-			style['top'] = initialMargin.top + ((y - initialPos.y) / canvasRect.height) * 100 + '%';
-		} else {
-			moving = true;
-			initialMargin.left = parseInt(String(style['left']).replace('%', ''));
-			initialMargin.top = parseInt(String(style['top']).replace('%', ''));
-			initialMargin.top = isNaN(initialMargin.top) ? 0 : initialMargin.top;
-			initialMargin.left = isNaN(initialMargin.left) ? 0 : initialMargin.left;
-			initialPos = {
-				x: x,
-				y: y
-			};
-		}
 	};
 	let childMoving = false;
 	const checkArrayEquals = (arr1: any[], arr2: any[]) => {
@@ -135,6 +113,28 @@
 			edit = false;
 		}
 	}
+
+	import Moveable from 'svelte-moveable';
+	let target: HTMLElement;
+	type frameType = {
+		translate?: [number, number];
+		rotate?: number;
+	};
+	let frame = {
+		translate: [0, 0],
+		rotate: 0
+	} as frameType;
+	$: {
+		if (elementComponent) {
+			elementComponent.style.outline = isHovering ? '1px solid #000' : 'none';
+		}
+	}
+	const setTranslate = ({ translate, rotate }: frameType) => {
+		translate = translate || frame.translate;
+		rotate = rotate || frame.rotate;
+
+		return translate ? `translate(${translate[0]}px, ${translate[1]}px) rotate(${rotate}deg)` : '';
+	};
 </script>
 
 <span class="h-0 opacity-0 absolute">
@@ -144,17 +144,8 @@
 <!-- svelte-ignore a11y-mouse-events-have-key-events -->
 <svelte:element
 	this={Component}
+	bind:this={target}
 	class={`${classname} ${id} element`}
-	use:asDraggable={{
-		onDragMove: moveElement,
-		neverFrom: '.never',
-		relativeTo: 'parent',
-		onDragEnd: () => {
-			movingElement.set([]);
-			moving = false;
-		}
-	}}
-	on:dragstart={startDrag}
 	on:click={(e) => {
 		if (active) {
 			edit = true;
@@ -169,9 +160,6 @@
 	}}
 	on:mouseover|stopPropagation={() => (isHovering = true)}
 	on:mouseout|stopPropagation={() => (isHovering = false)}
-	style={`${varStyle}${isHovering ? 'outline: 1px solid seagreen;' : ''}${
-		active && 'z-index:9999'
-	} user-select: none;`}
 	{id}
 >
 	<slot />
@@ -181,7 +169,6 @@
 			<textarea
 				id={`textarea_${id}`}
 				bind:value={content}
-				disabled={!active}
 				class="absolute top-0 left-0 w-full h-full {id}"
 				style="margin:0;top:0;left:0;"
 				autocomplete="off"
@@ -192,10 +179,73 @@
 	{:else if !children || (children && children.length == 0)}
 		{name}
 	{/if}
-	{#if active}
-		<Resizer bind:style bind:containerWidth bind:containerHeight {hierarchy} />
-	{/if}
 </svelte:element>
+{#if active && canvasRect}
+	<Moveable
+		{target}
+		resizable={true}
+		keepRatio={false}
+		throttleResize={1}
+		renderDirections={['nw', 'n', 'ne', 'w', 'e', 'sw', 's', 'se']}
+		edge={false}
+		zoom={1}
+		origin={true}
+		padding={{ left: 0, top: 0, right: 0, bottom: 0 }}
+		draggable={!edit}
+		throttleDrag={0}
+		snappable={true}
+		verticalGuidelines={[0, canvasRect.height / 2, canvasRect.height]}
+		horizontalGuidelines={[0, canvasRect.width / 2, canvasRect.width]}
+		snapThreshold={5}
+		isDisplaySnapDigit={true}
+		snapGap={true}
+		snapDirections={{
+			top: true,
+			right: true,
+			bottom: true,
+			left: true,
+			center: true,
+			middle: true
+		}}
+		elementSnapDirections={{
+			top: true,
+			right: true,
+			bottom: true,
+			left: true,
+			center: true,
+			middle: true
+		}}
+		snapDigit={0}
+		on:dragStart={({ detail: e }) => {
+			e.set(frame.translate);
+		}}
+		on:drag={({ detail: e }) => {
+			frame.translate = e.beforeTranslate;
+			e.target.style.transform = setTranslate({ translate: e.beforeTranslate });
+		}}
+		on:resizeStart={({ detail: e }) => {
+			e.setOrigin(['%', '%']);
+			e.dragStart && e.dragStart.set(frame.translate);
+		}}
+		on:resize={({ detail: e }) => {
+			const beforeTranslate = e.drag.beforeTranslate;
+			frame.translate = beforeTranslate;
+			target.style.width = `${e.width}px`;
+			target.style.height = `${e.height}px`;
+			target.style.transform = setTranslate({ translate: beforeTranslate });
+		}}
+		rotatable={true}
+		throttleRotate={0}
+		rotationPosition={'top'}
+		on:rotateStart={({ detail: e }) => {
+			e.set(frame.rotate);
+		}}
+		on:rotate={({ detail: { beforeRotate } }) => {
+			frame.rotate = beforeRotate;
+			target.style.transform = setTranslate({ rotate: beforeRotate });
+		}}
+	/>
+{/if}
 
 <style>
 	textarea {
@@ -215,5 +265,8 @@
 		transition: 0.2s ease-in-out outline;
 		outline: 1px solid transparent;
 		width: 100%;
+		position: absolute;
+		top: 150px;
+		left: 100px;
 	}
 </style>

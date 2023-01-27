@@ -1,7 +1,6 @@
 <script lang="ts">
 	import ToolsDrawer from '$lib/components/editor/tools-drawer.svelte';
 	import Tools from '$lib/components/editor/tools.svelte';
-	import Header from '$lib/components/header/header.svelte';
 	import { writable } from 'svelte/store';
 	import { setContext } from 'svelte';
 	import type { toolType } from '$lib/components/types/editor/toolType';
@@ -10,15 +9,15 @@
 		getElements,
 		setElements,
 		type elementsType,
-		type customStyleType,
-		setSelectedElement
+		setSelectedElement,
+		type styleObjectType
 	} from '$lib/utils/elements';
 	import { onDestroy } from 'svelte';
 
 	type deviceSizesType = 'desktop' | 'tablet' | 'mobile';
 	setContext('active-tool-drawer', writable<toolType>(null));
 	setContext('active-device-size', writable<deviceSizesType>('desktop'));
-	setContext('custom-style', writable<customStyleType | null>(null));
+	setContext('custom-style', writable<styleObjectType | null>(null));
 	setContext('adjustments-active', writable(false));
 	setElements();
 	setSelectedElement();
