@@ -16,6 +16,7 @@
 	import { cloneDeep } from 'lodash';
 	let selectedElement = getSelectedElement();
 	export let element: elementType;
+	export let components: HTMLElement[];
 	let {
 		name,
 		Component,
@@ -195,7 +196,8 @@
 		snappable={true}
 		verticalGuidelines={[0, canvasRect.height / 2, canvasRect.height]}
 		horizontalGuidelines={[0, canvasRect.width / 2, canvasRect.width]}
-		snapThreshold={5}
+		snapThreshold={1}
+		elementGuidelines={components.filter((c) => c != elementComponent)}
 		isDisplaySnapDigit={true}
 		snapGap={true}
 		snapDirections={{

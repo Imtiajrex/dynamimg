@@ -6,11 +6,11 @@
 	export let element: elementType;
 	$: ({ name, children, id, hierarchy } = element);
 
-	let selectedElement = getSelectedElement() as Writable<string>;
+	let selectedElement = getSelectedElement() as Writable<string[]>;
 	const remove = () => {
 		removeElement({ hierarchy });
 	};
-	$: active = $selectedElement == id;
+	$: active = $selectedElement.includes(id);
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -19,7 +19,7 @@
 		? 'bg-black text-white'
 		: 'bg-white'}"
 	on:click={() => {
-		$selectedElement = id;
+		$selectedElement = [id];
 	}}
 >
 	{name}
