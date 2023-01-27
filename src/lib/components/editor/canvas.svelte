@@ -11,31 +11,22 @@
 		type elementsType,
 		type hierarchyType
 	} from '$lib/utils/elements';
-	import type { customStyleType } from '$lib/utils/elements';
-	import Element from './element.svelte';
+	import type { styleObjectType as objectStyleType } from '$lib/utils/elements';
+
 	import { onMount } from 'svelte';
 	import ElementRenderer from './element-renderer.svelte';
-	let device = getContext('active-device-size') as Writable<string>;
 	let tool = getContext('active-tool-drawer') as Writable<string | null>;
-	let customStyleContext = getContext('custom-style') as Writable<customStyleType | null>;
-	const sizes = {
-		desktop: 'max-w-screen-2xl',
-		tablet: 'max-w-screen-md',
-		mobile: 'max-w-md'
-	} as { [key: string]: string };
+	let customStyleContext = getContext('custom-style') as Writable<objectStyleType | null>;
+
 	function onDrop(x: number, y: number, Operation: DropOperation, DataOffered: any) {
 		if ($movingElement.length == 1) return;
 		addElement({
 			elementID: DataOffered.element as elementsKeyListType,
 			style: {
-				desktop: {
-					position: 'absolute',
-					top: y - canvasSize.top + 'px',
-					left: x - canvasSize.left + 'px',
-					'max-width': '500px'
-				},
-				mobile: {},
-				tablet: {}
+				position: 'absolute',
+				top: (y - canvasSize.top) / canvasSize.top + '%',
+				left: (x - canvasSize.left) / canvasSize.left + '%',
+				'max-width': '500px'
 			}
 		});
 		tool.set(null);
@@ -60,7 +51,21 @@
 	const elements = getElements() as elementsType;
 	let selectedElement = getSelectedElement();
 	let movingElement = writable<hierarchyType>([]);
+	let isCtrlPressed = false;
 	setContext('moving-element', movingElement);
+	setContext('is-ctrl-pressed', {
+		get: () => isCtrlPressed
+	});
+	function onKeyDown(e: KeyboardEvent) {
+		if (e.key == 'Control') {
+			isCtrlPressed = true;
+		}
+	}
+	function onKeyUp(e: KeyboardEvent) {
+		if (e.key == 'Control') {
+			isCtrlPressed = false;
+		}
+	}
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -77,10 +82,13 @@
 		e.stopPropagation();
 	}}
 	id="canvas"
-	class={`canvas overflow-auto relative w-full h-full bg-white border-2 border-primary mx-auto rounded-md ${sizes[$device]}`}
+	class={`canvas overflow-auto relative w-full h-full bg-white border-2 border-primary mx-auto rounded-md`}
+	style={`max-width: 800px;`}
 >
 	<ElementRenderer bind:elements={$elements} />
 </div>
+
+<svelte:window on:keydown|preventDefault={onKeyDown} on:keyup|preventDefault={onKeyUp} />
 
 <style>
 	.canvas {
