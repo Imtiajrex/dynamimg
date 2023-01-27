@@ -70,8 +70,18 @@ const elementsMap = {
 	}
 } as elementMapType;
 
+const usedIds = [] as string[];
+type getUsedIdContextType = () => { get: () => string[] };
+export const getUsedIds: getUsedIdContextType = () => getContext('used-ids');
 export const getElements = () => getContext('elements');
-export const setElements = () => setContext('elements', elements);
+export const setElements = () => {
+	setContext('elements', elements);
+	setContext('used-ids', {
+		get() {
+			return usedIds;
+		}
+	});
+};
 
 export const getElement = ({
 	elements,
@@ -82,10 +92,10 @@ export const getElement = ({
 }) => {
 	console.log(elements);
 };
-const usedIds = [] as string[];
-const generateID = (): string => {
+const generateID = (elementID: string): string => {
 	let id = Math.random().toString(36).substring(2, 9);
-	if (usedIds.includes(id)) id = generateID();
+	id = `${elementID}_${id}`;
+	if (usedIds.includes(id)) id = generateID(elementID);
 	usedIds.push(id);
 	return id;
 };
@@ -99,7 +109,7 @@ export const addElement = ({
 	style?: styleObjectType;
 }) => {
 	const element = { ...elementsMap[elementID] } as elementType;
-	element.id = elementID + '_' + generateID();
+	element.id = generateID(elementID);
 	element.elementId = elementID;
 	element.hierarchy = [element.id];
 	if (!element.style) element.style = {};
@@ -145,12 +155,8 @@ export const assignElement = ({
 };
 export const removeElement = ({ hierarchy }: { hierarchy: hierarchyType }) => {
 	elements.update((elements) => {
+		usedIds.splice(usedIds.indexOf(hierarchy[hierarchy.length - 1]), 1);
 		if (hierarchy.length == 1) {
-			console.log(
-				elements,
-				hierarchy,
-				elements.filter((element) => element.id !== hierarchy[0])
-			);
 			return elements.filter((element) => element.id !== hierarchy[0]);
 		} else {
 			const parentElement = traverseElements(elements, [...hierarchy.slice(0, -1)]);
