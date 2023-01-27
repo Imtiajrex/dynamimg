@@ -82,7 +82,7 @@
 		e.stopPropagation();
 	}}
 	id="canvas"
-	class={`canvas overflow-auto relative w-full h-full bg-white border-2 border-primary mx-auto rounded-md`}
+	class={`canvas overflow-hidden relative w-full h-full bg-white border-2 border-primary mx-auto rounded-md`}
 	style={`max-width: 800px;`}
 >
 	<ElementRenderer bind:elements={$elements} />
