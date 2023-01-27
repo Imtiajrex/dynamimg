@@ -10,10 +10,9 @@
 	} from '$lib/utils/elements';
 	import { getContext, onMount } from 'svelte';
 	import type { Writable } from 'svelte/store';
-	import Resizer from './resizer.svelte';
 	import * as _ from 'lodash';
 	import { styleObjectToVariableBasedCss } from '$lib/utils/styleCompiler';
-	import { asDraggable, asDropZone } from 'svelte-drag-and-drop-actions';
+
 	import { cloneDeep } from 'lodash';
 	let selectedElement = getSelectedElement();
 	export let element: elementType;
