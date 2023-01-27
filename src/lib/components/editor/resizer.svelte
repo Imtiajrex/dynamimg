@@ -1,5 +1,9 @@
 <script lang="ts">
-	import { removeElement, type customStyleType, type hierarchyType } from '$lib/utils/elements';
+	import {
+		removeElement,
+		type styleObjectType as objectStyleType,
+		type hierarchyType
+	} from '$lib/utils/elements';
 
 	import { asDraggable } from 'svelte-drag-and-drop-actions';
 	/**** map all touch events to mouse events ****/
@@ -7,10 +11,10 @@
 	import mapTouchToMouseFor from 'svelte-touch-to-mouse';
 	import type { Writable } from 'svelte/store';
 	import { getContext, onMount } from 'svelte';
-	import { DragDrop, Trash } from 'tabler-icons-svelte';
+	import { DragDrop, Rotate, Trash } from 'tabler-icons-svelte';
 
 	export let containerWidth: number, containerHeight: number;
-	export let style: customStyleType;
+	export let style: objectStyleType;
 
 	let resizing = false;
 	let paddingResizing = false;
@@ -29,13 +33,16 @@
 			if (dir == 'top' || dir == 'bottom' || dir == 'all') {
 				const height = initialHeight + (y - initialY) * (dir == 'top' ? -1 : 1);
 				containerHeight = height;
-				style[$device]['min-height'] = height + 'px';
+				style['min-height'] = height + 'px';
 			}
 			if (dir == 'left' || dir == 'right' || dir == 'all') {
 				const width = initialWidth + (x - initialX) * (dir == 'left' ? -1 : 1);
 				containerWidth = width;
-				style[$device]['max-width'] = width + 'px';
+				style['max-width'] = width + 'px';
 			}
+			console.log(
+				`x: ${x}, y: ${y}, initialX: ${initialX}, initialY: ${initialY}, initialWidth: ${initialWidth}, initialHeight: ${initialHeight}`
+			);
 		} else {
 			initialX = x;
 			initialY = y;
@@ -69,6 +76,8 @@
 			hierarchy
 		});
 	};
+	let rotating = false;
+	const rotate = () => {};
 	export let canvasSize = { width: 0, height: 0 };
 </script>
 
@@ -89,11 +98,20 @@
 	<Trash size={18} />
 </button>
 
-<button
-	class="handle w-6 h-6 rounded-sm cursor-move bg-blue-700 shadow-sm flex justify-center items-center absolute top-0 left-0 text-white"
->
-	<DragDrop size={15} />
-</button>
+<div class="absolute -bottom-10 left-1/2 flex items-center gap-3">
+	<button
+		class="handle w-6 h-6 rounded-full cursor-move bg-white shadow-lg flex justify-center items-center  text-black"
+	>
+		<DragDrop size={15} />
+	</button>
+
+	<button
+		on:drag|preventDefault|stopPropagation={(e) => {}}
+		class="never w-6 h-6 rounded-full cursor-grab active:cursor-grabbing active:outline-1 outline-black active:outline bg-white shadow-lg flex justify-center items-center text-black"
+	>
+		<Rotate size={15} />
+	</button>
+</div>
 
 <style>
 	button,

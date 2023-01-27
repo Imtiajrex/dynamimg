@@ -16,18 +16,13 @@ export type hierarchyType = string[];
 export type styleObjectType = {
 	[key: string]: string | styleObjectType;
 };
-export type customStyleType = {
-	desktop: styleObjectType;
-	mobile: styleObjectType;
-	tablet: styleObjectType;
-};
 export type elementType = {
 	name: string;
 	Component: any;
 	id: string;
 	elementId: string;
 	classname?: string;
-	style: customStyleType;
+	style: styleObjectType;
 	content?: string;
 	hierarchy: hierarchyType;
 	children?: elementType[];
@@ -43,7 +38,7 @@ type elementMapType = {
 		name: string;
 		Component: any;
 		content?: string;
-		style?: customStyleType;
+		style?: styleObjectType;
 		classname?: string;
 		childEnabled: boolean;
 	};
@@ -53,14 +48,7 @@ const elementsMap = {
 		name: 'Heading',
 		Component: 'h1',
 		content: 'This is a heading',
-		childEnabled: false,
-		style: {
-			desktop: {
-				padding: '20px 20px 20px 20px'
-			},
-			mobile: {},
-			tablet: {}
-		}
+		childEnabled: false
 	},
 	paragraph: {
 		name: 'Paragraph',
@@ -108,18 +96,13 @@ export const addElement = ({
 }: {
 	elementID: elementsKeyListType;
 	hierarchy?: hierarchyType;
-	style?: customStyleType;
+	style?: styleObjectType;
 }) => {
 	const element = { ...elementsMap[elementID] } as elementType;
 	element.id = elementID + '_' + generateID();
 	element.elementId = elementID;
 	element.hierarchy = [element.id];
-	if (!element.style)
-		element.style = {
-			desktop: {},
-			mobile: {},
-			tablet: {}
-		};
+	if (!element.style) element.style = {};
 	else element.style = cloneDeep(element.style);
 	if (style) {
 		element.style = { ...element.style, ...style };
@@ -161,10 +144,15 @@ export const assignElement = ({
 	console.log(element);
 };
 export const removeElement = ({ hierarchy }: { hierarchy: hierarchyType }) => {
-	console.log(hierarchy);
 	elements.update((elements) => {
-		if (hierarchy.length == 1) return elements.filter((element) => element.id !== hierarchy[0]);
-		else {
+		if (hierarchy.length == 1) {
+			console.log(
+				elements,
+				hierarchy,
+				elements.filter((element) => element.id !== hierarchy[0])
+			);
+			return elements.filter((element) => element.id !== hierarchy[0]);
+		} else {
 			const parentElement = traverseElements(elements, [...hierarchy.slice(0, -1)]);
 			if (parentElement && parentElement.children && parentElement.children.length > 0) {
 				parentElement.children = parentElement.children.filter(

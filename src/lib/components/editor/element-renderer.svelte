@@ -5,7 +5,7 @@
 </script>
 
 {#if elements}
-	{#each elements as element}
+	{#each elements as element, idx (element.id)}
 		<Element bind:element>
 			<svelte:self bind:elements={element.children} />
 		</Element>
