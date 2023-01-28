@@ -35,4 +35,3 @@
 	<Canvas />
 	<ToolsDrawer />
 </div>
-<div class="p-0.5" />

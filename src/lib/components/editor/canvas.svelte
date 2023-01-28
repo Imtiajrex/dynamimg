@@ -94,5 +94,6 @@
 	.canvas {
 		container-type: inline-size;
 		container-name: canvas;
+		user-select: auto;
 	}
 </style>

@@ -1,14 +1,20 @@
 <script lang="ts">
+	//@ts-nocheck
 	import { getContext } from 'svelte';
 	import type { Writable } from 'svelte/store';
 
 	import {
 		Adjustments,
+		Bold,
 		DeviceDesktop,
 		DeviceMobile,
 		DeviceTablet,
+		Italic,
+		List,
+		ListNumbers,
 		Plus,
-		Stack
+		Stack,
+		Underline
 	} from 'tabler-icons-svelte';
 	import type { deviceSizeType } from '../types/editor/deviceSizeType';
 	import type { toolType } from '../types/editor/toolType';
@@ -29,23 +35,36 @@
 			Icon: Stack
 		}
 	] as { name: string; id: toolType; Icon: any }[];
-	let deviceSizes = [
+	let editorTools = [
 		{
-			name: 'desktop',
-			Icon: DeviceDesktop
+			name: 'bold',
+			Icon: Bold,
+			command: 'bold'
 		},
 		{
-			name: 'tablet',
-			Icon: DeviceTablet
+			name: 'italic',
+			Icon: Italic,
+			command: 'italic'
 		},
 		{
-			name: 'mobile',
-			Icon: DeviceMobile
+			name: 'underline',
+			Icon: Underline,
+			command: 'underline'
+		},
+		{
+			name: 'Ordered List',
+			Icon: ListNumbers,
+			command: 'insertOrderedList'
+		},
+		{
+			name: 'Unordered List',
+			Icon: List,
+			command: 'insertUnorderedList'
 		}
-	] as { name: deviceSizeType; Icon: any }[];
+	] as { name: string; Icon: any; command: string }[];
 </script>
 
-<div class="grid grid-cols-2 w-full my-4">
+<div class="grid grid-cols-3 w-full my-4">
 	<div class="flex items-center gap-2">
 		{#each tools as tool}
 			<ToolButton
@@ -54,6 +73,17 @@
 				}}
 				Icon={tool.Icon}
 				active={$activeTool == tool.id}
+			/>
+		{/each}
+	</div>
+	<div class="flex items-center justify-center gap-2">
+		{#each editorTools as tool}
+			<ToolButton
+				onClick={() => {
+					document.execCommand(tool.command, false, null);
+				}}
+				Icon={tool.Icon}
+				active={false}
 			/>
 		{/each}
 	</div>
