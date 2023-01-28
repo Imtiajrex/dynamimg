@@ -129,11 +129,19 @@
 			elementComponent.style.outline = isHovering ? '1px solid #000' : 'none';
 		}
 	}
+	$: {
+		if (elementComponent) {
+			elementComponent.style.userSelect = edit ? 'auto' : 'none';
+		}
+	}
 	const setTranslate = ({ translate, rotate }: frameType) => {
 		translate = translate || frame.translate;
 		rotate = rotate || frame.rotate;
 
 		return translate ? `translate(${translate[0]}px, ${translate[1]}px) rotate(${rotate}deg)` : '';
+	};
+	const onInput = (e: any) => {
+		console.log(e.target.innerHTML);
 	};
 </script>
 
@@ -161,21 +169,12 @@
 	on:mouseover|stopPropagation={() => (isHovering = true)}
 	on:mouseout|stopPropagation={() => (isHovering = false)}
 	{id}
+	contenteditable={edit}
+	on:input={onInput}
 >
 	<slot />
 	{#if contentfulElement.includes(elementId)}
-		{content}
-		{#if edit}
-			<textarea
-				id={`textarea_${id}`}
-				bind:value={content}
-				class="absolute top-0 left-0 w-full h-full {id}"
-				style="margin:0;top:0;left:0;"
-				autocomplete="off"
-				autocorrect="off"
-				spellcheck="false"
-			/>
-		{/if}
+		{@html content}
 	{:else if !children || (children && children.length == 0)}
 		{name}
 	{/if}
@@ -268,6 +267,7 @@
 		width: 100%;
 		position: absolute;
 		top: 150px;
+		user-select: auto;
 		left: 100px;
 	}
 </style>
