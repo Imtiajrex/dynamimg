@@ -11,6 +11,21 @@
 	let tool = getContext('active-tool-drawer') as Writable<string | null>;
 	export let name = '';
 	const id = name.toLowerCase().replace(' ', '-');
+	const insertElement = () => {
+		const canvas = document.getElementById('canvas') as HTMLElement;
+		const canvasRect = canvas.getBoundingClientRect();
+		addElement({
+			elementID: id,
+			style: {
+				top: canvasRect.height / 2 + 'px',
+				left: canvasRect.width / 2 + 'px',
+				position: 'absolute',
+				transform: 'translate(-50%, -50%)'
+			}
+		});
+
+		tool.set(null);
+	};
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -20,20 +35,7 @@
 		DataToOffer: { element: id },
 		Operations: 'copy'
 	}}
-	on:click={() => {
-		addElement({
-			elementID: id,
-			style: {
-				top: '50%',
-				left: '50%',
-				position: 'absolute',
-				'max-width': '500px',
-				transform: 'translate(-50%, -50%)'
-			}
-		});
-
-		tool.set(null);
-	}}
+	on:click={insertElement}
 >
 	<Icon size={25} class={' transition group-hover:text-white '} />
 	<div class="transition text-xs text-center font-semibold mt-2 group-hover:text-white  ">
