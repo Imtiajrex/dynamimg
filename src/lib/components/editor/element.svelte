@@ -14,6 +14,7 @@
 	import { styleObjectToVariableBasedCss } from '$lib/utils/styleCompiler';
 
 	import { cloneDeep } from 'lodash';
+
 	let selectedElement = getSelectedElement();
 	export let element: elementType;
 	export let components: HTMLElement[];
@@ -86,9 +87,6 @@
 	let tool = getContext('active-tool-drawer') as Writable<string | null>;
 
 	let isHovering = false;
-	const startDrag = () => {
-		movingElement.set(hierarchy);
-	};
 	let childMoving = false;
 	const checkArrayEquals = (arr1: any[], arr2: any[]) => {
 		return arr1.length === arr2.length && arr1.every((value, index) => value === arr2[index]);
@@ -140,9 +138,6 @@
 
 		return translate ? `translate(${translate[0]}px, ${translate[1]}px) rotate(${rotate}deg)` : '';
 	};
-	const onInput = (e: any) => {
-		console.log(e.target.innerHTML);
-	};
 </script>
 
 <span class="h-0 opacity-0 absolute">
@@ -169,12 +164,17 @@
 	on:mouseover|stopPropagation={() => (isHovering = true)}
 	on:mouseout|stopPropagation={() => (isHovering = false)}
 	{id}
-	contenteditable={edit}
-	on:input={onInput}
 >
 	<slot />
 	{#if contentfulElement.includes(elementId)}
-		{@html content}
+		<trix-editor
+			style={`width:100%;height:100%;${edit ? '' : 'display: none;'}`}
+			contenteditable
+			bind:innerHTML={element.content}
+		/>
+		{#if !edit}
+			{@html element.content}
+		{/if}
 	{:else if !children || (children && children.length == 0)}
 		{name}
 	{/if}
@@ -221,6 +221,8 @@
 		}}
 		on:drag={({ detail: e }) => {
 			frame.translate = e.beforeTranslate;
+			style['top'] = `${e.beforeTranslate[1]}px`;
+			style['left'] = `${e.beforeTranslate[0]}px`;
 			e.target.style.transform = setTranslate({ translate: e.beforeTranslate });
 		}}
 		on:resizeStart={({ detail: e }) => {
@@ -232,6 +234,8 @@
 			frame.translate = beforeTranslate;
 			target.style.width = `${e.width}px`;
 			target.style.height = `${e.height}px`;
+			style['width'] = `${e.width}px!important`;
+			style['height'] = `${e.height}px!important`;
 			target.style.transform = setTranslate({ translate: beforeTranslate });
 		}}
 		rotatable={true}
@@ -242,6 +246,7 @@
 		}}
 		on:rotate={({ detail: { beforeRotate } }) => {
 			frame.rotate = beforeRotate;
+			style['rotate'] = `${beforeRotate}deg`;
 			target.style.transform = setTranslate({ rotate: beforeRotate });
 		}}
 	/>
@@ -266,8 +271,6 @@
 		outline: 1px solid transparent;
 		width: 100%;
 		position: absolute;
-		top: 150px;
 		user-select: auto;
-		left: 100px;
 	}
 </style>

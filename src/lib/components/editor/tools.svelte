@@ -1,14 +1,14 @@
 <script lang="ts">
 	//@ts-nocheck
+	import { htmlCompiler } from '$lib/utils/compilers';
+	import { getElements } from '$lib/utils/elements';
 	import { getContext } from 'svelte';
 	import type { Writable } from 'svelte/store';
 
 	import {
 		Adjustments,
 		Bold,
-		DeviceDesktop,
-		DeviceMobile,
-		DeviceTablet,
+		DatabaseExport,
 		Italic,
 		List,
 		ListNumbers,
@@ -19,6 +19,7 @@
 	import type { deviceSizeType } from '../types/editor/deviceSizeType';
 	import type { toolType } from '../types/editor/toolType';
 	import ToolButton from './tool-button.svelte';
+
 	let activeTool = getContext('active-tool-drawer') as Writable<toolType>;
 
 	let device = getContext('active-device-size') as Writable<deviceSizeType>;
@@ -62,6 +63,12 @@
 			command: 'insertUnorderedList'
 		}
 	] as { name: string; Icon: any; command: string }[];
+	let elements = getElements();
+	const executeCommand = (command: string) => {
+		const element = document.querySelector('trix-editor') as HTMLElement;
+
+		element.editor.activateAttribute(command);
+	};
 </script>
 
 <div class="grid grid-cols-3 w-full my-4">
@@ -78,16 +85,18 @@
 	</div>
 	<div class="flex items-center justify-center gap-2">
 		{#each editorTools as tool}
-			<ToolButton
-				onClick={() => {
-					document.execCommand(tool.command, false, null);
-				}}
-				Icon={tool.Icon}
-				active={false}
-			/>
+			<ToolButton onClick={() => executeCommand(tool.command)} Icon={tool.Icon} active={false} />
 		{/each}
 	</div>
 	<div class="flex items-center gap-4 justify-end">
+		<ToolButton
+			onClick={() => {
+				htmlCompiler({
+					elements: $elements
+				});
+			}}
+			Icon={DatabaseExport}
+		/>
 		<ToolButton
 			onClick={() => {
 				$adjustment = !$adjustment;

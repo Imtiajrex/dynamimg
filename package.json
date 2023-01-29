@@ -33,6 +33,7 @@
 		"svelte-drag-and-drop-actions": "^1.0.0",
 		"svelte-moveable": "^0.34.1",
 		"svelte-touch-to-mouse": "^1.0.0",
-		"tabler-icons-svelte": "^1.9.1"
+		"tabler-icons-svelte": "^1.9.1",
+		"trix": "^2.0.4"
 	}
 }

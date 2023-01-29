@@ -15,6 +15,7 @@
 
 	import { onMount } from 'svelte';
 	import ElementRenderer from './element-renderer.svelte';
+
 	let tool = getContext('active-tool-drawer') as Writable<string | null>;
 	let customStyleContext = getContext('custom-style') as Writable<objectStyleType | null>;
 
@@ -47,6 +48,11 @@
 			top: canvas.getBoundingClientRect().top,
 			left: canvas.getBoundingClientRect().left
 		};
+
+		document.addEventListener('trix-initialize', () => {
+			const toolbar = document.querySelector('trix-toolbar') as HTMLElement;
+			if (toolbar) toolbar.style.display = 'none';
+		});
 	});
 	const elements = getElements() as elementsType;
 	let selectedElement = getSelectedElement();
