@@ -15,7 +15,7 @@
 
 	import { onMount } from 'svelte';
 	import ElementRenderer from './element-renderer.svelte';
-
+	import Trix from 'trix';
 	let tool = getContext('active-tool-drawer') as Writable<string | null>;
 	let customStyleContext = getContext('custom-style') as Writable<objectStyleType | null>;
 
@@ -48,7 +48,21 @@
 			top: canvas.getBoundingClientRect().top,
 			left: canvas.getBoundingClientRect().left
 		};
-
+		document.addEventListener('trix-before-initialize', () => {
+			Trix.config.textAttributes.underline = {
+				style: { textDecoration: 'underline' },
+				parser: function (element: HTMLElement) {
+					return element.style.textDecoration === 'underline';
+				},
+				inheritable: 1
+			};
+			Trix.config.textAttributes.orderedList = {
+				parser: function (element: HTMLElement) {
+					return element.tagName === 'OL';
+				},
+				inheritable: 1
+			};
+		});
 		document.addEventListener('trix-initialize', () => {
 			const toolbar = document.querySelector('trix-toolbar') as HTMLElement;
 			if (toolbar) toolbar.style.display = 'none';

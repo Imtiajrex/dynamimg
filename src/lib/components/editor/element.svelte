@@ -171,7 +171,9 @@
 	<slot />
 	{#if contentfulElement.includes(elementId)}
 		<trix-editor
-			style={`width:100%;height:100%;${edit ? '' : 'display: none;'}`}
+			style={`width:100%;height:100%;position:absolute;top:0;left:0;${
+				edit ? '' : 'display: none;'
+			}`}
 			contenteditable
 			bind:innerHTML={element.content}
 		/>
