@@ -6,6 +6,8 @@
 	export let active: boolean = false;
 	export let noBG: boolean = false;
 	export let onClick: () => void = () => {};
+	export let className: string = '';
+	export let others: any = {};
 </script>
 
 <button
@@ -16,7 +18,8 @@
 			: 'text-primary hover:text-accent active:text-accent'
 	} ${!noBG && active && 'bg-accent/20 hover:bg-accent/10 hover:text-primary'} ${
 		noBG && active && 'bg-transparent  border-b-2 border-accent hover:text-accent'
-	}`}
+	} ${className}`}
+	{...others}
 >
 	<Icon />
 </button>
