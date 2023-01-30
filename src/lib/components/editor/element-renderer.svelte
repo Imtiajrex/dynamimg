@@ -5,13 +5,11 @@
 	let usedIds = getUsedIds();
 	let components = [] as HTMLElement[];
 	$: {
-		console.log(usedIds.get());
 		if (usedIds.get().length > 0) {
 			if (document)
 				components = usedIds.get().map((id) => {
 					return document.getElementById(id) as HTMLElement;
 				});
-			console.log(components);
 		}
 	}
 </script>
@@ -19,7 +17,9 @@
 {#if elements}
 	{#each elements as element, idx (element.id)}
 		<Element bind:element bind:components>
-			<svelte:self bind:elements={element.children} />
+			{#if element.children && element.children.length > 0}
+				<svelte:self bind:elements={element.children} />
+			{/if}
 		</Element>
 	{/each}
 {/if}

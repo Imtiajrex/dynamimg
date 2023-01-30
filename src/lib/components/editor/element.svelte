@@ -55,6 +55,9 @@
 		desktopStyler = document.getElementById(`style_desktop_${id}`) as HTMLElement;
 
 		updateDeviceStyles();
+		document.addEventListener('trix-change', (e: any) => {
+			element.content = e.target.innerHTML;
+		});
 	});
 
 	let varStyle = '';
