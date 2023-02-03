@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { getSelectedElement, removeElement, type elementType } from '$lib/utils/elements';
 	import type { Writable } from 'svelte/store';
-	import { Trash } from 'tabler-icons-svelte';
+	import { IconTrash } from '@tabler/icons-svelte';
 
 	export let element: elementType;
 	$: ({ name, children, id, hierarchy } = element);
@@ -27,7 +27,7 @@
 		class="{active ? 'text-white' : 'text-black'} hover:text-red-500 transition"
 		on:click={remove}
 	>
-		<Trash size={17} />
+		<IconTrash size={17} />
 	</button>
 </div>
 <div class="pl-3 border-l-2 border-gray-200 border-solid">

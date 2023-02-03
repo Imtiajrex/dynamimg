@@ -1,5 +1,4 @@
 <script lang="ts">
-	import './element.css';
 	import {
 		type elementType,
 		type hierarchyType,
@@ -64,11 +63,11 @@
 	const updateStyle = (css: string, device: any) => {
 		let deviceElement = desktopStyler;
 		if (deviceElement) {
-			let tag = `<style>
+			let tag = `< style>
 						.${id}{
 							${css}
 						}
-					</style>`;
+					</style >`;
 			if (deviceElement.innerHTML !== tag && css.length > 0) {
 				deviceElement.innerHTML = tag;
 			}
@@ -141,18 +140,7 @@
 
 		return translate ? `translate(${translate[0]}px, ${translate[1]}px) rotate(${rotate}deg)` : '';
 	};
-</script>
-
-<span class="h-0 opacity-0 absolute">
-	<span id={`style_desktop_${id}`} />
-</span>
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-mouse-events-have-key-events -->
-<svelte:element
-	this={Component}
-	bind:this={target}
-	class={`${classname} ${id} element`}
-	on:click={(e) => {
+	const onClick = (e: Event) => {
 		if (active) {
 			edit = true;
 		}
@@ -163,27 +151,52 @@
 		}
 		customStyleContext.set({ style, id });
 		e.stopPropagation();
-	}}
-	on:mouseover|stopPropagation={() => (isHovering = true)}
-	on:mouseout|stopPropagation={() => (isHovering = false)}
-	{id}
->
-	<slot />
-	{#if contentfulElement.includes(elementId)}
-		<trix-editor
-			style={`width:100%;height:100%;position:absolute;top:0;left:0;${
-				edit ? '' : 'display: none;'
-			}`}
-			contenteditable
-			bind:innerHTML={element.content}
-		/>
-		{#if !edit}
-			{@html element.content}
+	};
+</script>
+
+<span class="h-0 opacity-0 absolute">
+	<span id={`style_desktop_${id}`} />
+</span>
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-mouse-events-have-key-events -->
+{#if typeof Component === 'string'}
+	<svelte:element
+		this={Component}
+		bind:this={target}
+		on:click={onClick}
+		on:mouseover|stopPropagation={() => (isHovering = true)}
+		on:mouseout|stopPropagation={() => (isHovering = false)}
+		class={`${classname} ${id} element`}
+		{id}
+	>
+		<slot />
+		{#if contentfulElement.includes(elementId)}
+			{#if !edit}
+				{@html element.content}
+			{:else}
+				<trix-editor
+					style={`width:100%;height:100%;position:absolute;top:0;left:0;${
+						edit ? '' : 'display: none;'
+					}`}
+					toolbar="toolbar"
+					contenteditable
+					bind:innerHTML={element.content}
+				/>
+			{/if}
 		{/if}
-	{:else if !children || (children && children.length == 0)}
-		{name}
-	{/if}
-</svelte:element>
+	</svelte:element>
+{:else}
+	<div
+		bind:this={target}
+		class={`${classname} ${id} element`}
+		on:click={onClick}
+		on:mouseover={() => (isHovering = true)}
+		on:mouseout={() => (isHovering = false)}
+		{id}
+	>
+		<svelte:component this={Component} class="w-full h-full" />
+	</div>
+{/if}
 {#if active && canvasRect}
 	<Moveable
 		{target}
@@ -272,6 +285,8 @@
 		outline: none;
 	}
 	.element {
+		container-type: inline-size;
+		container-name: element;
 		transition: 0.2s ease-in-out outline;
 		outline: 1px solid transparent;
 		width: 100%;

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Edit, ExternalLink } from 'tabler-icons-svelte';
+	import { IconEdit, IconExternalLink } from '@tabler/icons-svelte';
 
 	export let name: string = 'Name Placeholder';
 	export let link: string = 'https://test.test.com';
@@ -16,7 +16,7 @@
 			href="/sites/{id}/editor"
 			class="flex items-center justify-center gap-2 text-white font-bold group-hover:opacity-100 opacity-0 bg-black/50 transition w-full h-full absolute cursor-pointer"
 		>
-			<Edit size={30} />
+			<IconEdit size={30} />
 			Edit Site
 		</a>
 		<img src={image} alt={name} class="rounded-md h-full object-cover w-full" />
@@ -32,7 +32,7 @@
 			class="text-sm text-accent hover:brightness-110 active:brightness-90 transition flex items-end gap-1"
 		>
 			{link}
-			<ExternalLink />
+			<IconExternalLink />
 		</a>
 	</div>
 </div>

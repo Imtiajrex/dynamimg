@@ -1,6 +1,6 @@
 <script lang="ts">
 	// @ts-nocheck
-	import type { TablerIcon, TablerIconProps } from 'tabler-icons-svelte';
+	import type { TablerIcon, TablerIconProps } from '@tabler/icons-svelte';
 
 	export let Icon: any;
 	export let active: boolean = false;
@@ -21,5 +21,5 @@
 	} ${className}`}
 	{...others}
 >
-	<Icon />
+	<svelte:component this={Icon} />
 </button>
