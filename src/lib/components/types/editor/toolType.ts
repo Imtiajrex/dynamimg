@@ -1,1 +1,1 @@
-export type toolType = 'add' | 'layer' | null;
+export type toolType = 'add' | 'layer' | 'icon' | null;

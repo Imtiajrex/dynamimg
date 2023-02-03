@@ -7,16 +7,16 @@
 	import { onMount } from 'svelte';
 
 	import {
-		Adjustments,
-		Bold,
-		DatabaseExport,
-		Italic,
-		List,
-		ListNumbers,
-		Plus,
-		Stack,
-		Underline
-	} from 'tabler-icons-svelte';
+		IconAdjustments,
+		IconBold,
+		IconDatabaseExport,
+		IconItalic,
+		IconList,
+		IconListNumbers,
+		IconPlus,
+		IconStack,
+		IconUnderline
+	} from '@tabler/icons-svelte';
 	import type { deviceSizeType } from '../types/editor/deviceSizeType';
 	import type { toolType } from '../types/editor/toolType';
 	import ToolButton from './tool-button.svelte';
@@ -42,38 +42,38 @@
 		{
 			name: 'Add Elements',
 			id: 'add',
-			Icon: Plus
+			Icon: IconPlus
 		},
 		{
 			name: 'Layers',
 			id: 'layer',
-			Icon: Stack
+			Icon: IconStack
 		}
 	] as { name: string; id: toolType; Icon: any }[];
 	let editorTools = [
 		{
 			name: 'bold',
-			Icon: Bold,
+			Icon: IconBold,
 			command: 'bold'
 		},
 		{
 			name: 'italic',
-			Icon: Italic,
+			Icon: IconItalic,
 			command: 'italic'
 		},
 		{
 			name: 'underline',
-			Icon: Underline,
+			Icon: IconUnderline,
 			command: 'underline'
 		},
 		{
 			name: 'Ordered List',
-			Icon: ListNumbers,
+			Icon: IconListNumbers,
 			command: 'number'
 		},
 		{
 			name: 'Unordered List',
-			Icon: List,
+			Icon: IconList,
 			command: 'bullet'
 		}
 	] as { name: string; Icon: any; command: string }[];
@@ -120,7 +120,7 @@
 			/>
 		{/each}
 	</div>
-	<div class="flex items-center justify-center gap-2">
+	<div class="flex items-center justify-center gap-2" id="toolbar">
 		{#if $selectedElement.length > 0}
 			{#each editorTools as tool}
 				<ToolButton
@@ -138,13 +138,13 @@
 					elements: $elements
 				});
 			}}
-			Icon={DatabaseExport}
+			Icon={IconDatabaseExport}
 		/>
 		<ToolButton
 			onClick={() => {
 				$adjustment = !$adjustment;
 			}}
-			Icon={Adjustments}
+			Icon={IconAdjustments}
 			active={$adjustment}
 		/>
 	</div>

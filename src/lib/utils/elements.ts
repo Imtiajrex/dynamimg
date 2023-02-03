@@ -2,16 +2,27 @@ import { cloneDeep } from 'lodash';
 import { getContext, setContext } from 'svelte';
 import { SvelteElement } from 'svelte/internal';
 import { get, writable, type Writable } from 'svelte/store';
-import { Container, CursorText, Heading, LayoutGrid } from 'tabler-icons-svelte';
-
+import {
+	IconContainer,
+	IconCursorText,
+	IconHeading,
+	IconIcons,
+	IconLayoutGrid,
+	IconLetterP
+} from '@tabler/icons-svelte';
+import * as Icons from '@tabler/icons-svelte';
 export const elementsList = [
-	{ Icon: Heading, name: 'Heading' },
-	{ Icon: CursorText, name: 'Paragraph' },
-	{ Icon: Container, name: 'Container' },
-	{ Icon: LayoutGrid, name: 'Grid' }
-] as { Icon: any; name: string }[];
+	{ Icon: IconHeading, name: 'Headline', id: 'heading' },
+	{ Icon: IconLetterP, name: 'Sub-Heading', id: 'paragraph' },
+	{
+		Icon: IconIcons,
+		name: 'Icon',
+		id: 'icon',
+		open: true
+	}
+] as { Icon: any; name: string; id: elementsKeyListType; open?: boolean }[];
 
-export type elementsKeyListType = 'heading' | 'paragraph' | 'container' | 'grid';
+export type elementsKeyListType = 'heading' | 'paragraph' | 'icon';
 export type hierarchyType = string[];
 export type styleObjectType = {
 	[key: string]: string | styleObjectType;
@@ -27,6 +38,7 @@ export type elementType = {
 	hierarchy: hierarchyType;
 	children?: elementType[];
 	childEnabled: boolean;
+	ComponentProvider?: any;
 };
 export type elementsType = Writable<elementType[]>;
 const elements = writable<elementType[]>([]);
@@ -45,28 +57,20 @@ type elementMapType = {
 };
 const elementsMap = {
 	heading: {
-		name: 'Heading',
+		name: 'Headline',
 		Component: 'h1',
-		content: 'This is a heading',
+		content: 'This is a headline',
 		childEnabled: false
 	},
 	paragraph: {
-		name: 'Paragraph',
-		Component: 'p',
+		name: 'Sub-Heading',
+		Component: 'div',
 		childEnabled: false,
-		content: 'This is a paragraph. It is used to write large chunks of text.'
+		content: 'This is a sub headline. It is used to write large chunks of text.'
 	},
-	container: {
-		name: 'Container',
-		Component: 'div',
-		childEnabled: true,
-		classname: 'canvas-container'
-	},
-	grid: {
-		name: 'Grid',
-		Component: 'div',
-		childEnabled: true,
-		classname: 'canvas-grid'
+	icon: {
+		name: 'Icon',
+		childEnabled: false
 	}
 } as elementMapType;
 
@@ -102,16 +106,19 @@ const generateID = (elementID: string): string => {
 export const addElement = ({
 	elementID,
 	hierarchy = [],
-	style
+	style,
+	component
 }: {
 	elementID: elementsKeyListType;
 	hierarchy?: hierarchyType;
 	style?: styleObjectType;
+	component?: any;
 }) => {
 	const element = { ...elementsMap[elementID] } as elementType;
 	element.id = generateID(elementID);
 	element.elementId = elementID;
 	element.hierarchy = [element.id];
+	if (component) element.Component = component;
 	if (!element.style) element.style = {};
 	else element.style = cloneDeep(element.style);
 	if (style) {

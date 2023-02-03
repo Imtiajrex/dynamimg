@@ -7,9 +7,9 @@
 </script>
 
 {#if show}
-	<Drawer>
+	<Drawer className="top-0 left-0 rounded-r-xl w-40">
 		<h3 class="text-xl">Elements</h3>
-		<div class="flex justify-between gap-3 flex-wrap mt-5">
+		<div class="flex  gap-3 flex-wrap mt-5">
 			{#each elementsList as element}
 				<ElementCard {...element} />
 			{/each}
