@@ -152,6 +152,7 @@
 		customStyleContext.set({ style, id });
 		e.stopPropagation();
 	};
+	const isIcon = elementId == 'icon';
 </script>
 
 <span class="h-0 opacity-0 absolute">
@@ -201,7 +202,7 @@
 	<Moveable
 		{target}
 		resizable={true}
-		keepRatio={false}
+		keepRatio={isIcon}
 		throttleResize={1}
 		renderDirections={['nw', 'n', 'ne', 'w', 'e', 'sw', 's', 'se']}
 		edge={false}
