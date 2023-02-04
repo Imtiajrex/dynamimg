@@ -14,7 +14,6 @@
 	} from '$lib/utils/elements';
 	import { onDestroy } from 'svelte';
 
-	import Trix from 'trix';
 	type deviceSizesType = 'desktop' | 'tablet' | 'mobile';
 	setContext('active-tool-drawer', writable<toolType>(null));
 	setContext('active-device-size', writable<deviceSizesType>('desktop'));
