@@ -15,7 +15,6 @@
 
 	import { onMount } from 'svelte';
 	import ElementRenderer from './element-renderer.svelte';
-	import Trix from 'trix';
 	let tool = getContext('active-tool-drawer') as Writable<string | null>;
 	let customStyleContext = getContext('custom-style') as Writable<objectStyleType | null>;
 
