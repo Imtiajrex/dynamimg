@@ -20,13 +20,13 @@
 		}
 		const canvas = document.getElementById('canvas') as HTMLElement;
 		const canvasRect = canvas.getBoundingClientRect();
+		const top = canvasRect.height / 2 + 'px';
+		const left = canvasRect.width / 2 + 'px';
 		addElement({
 			elementID: id,
 			style: {
-				top: canvasRect.height / 2 + 'px',
-				left: canvasRect.width / 2 + 'px',
 				position: 'absolute',
-				transform: 'translate(-50%, -50%)',
+				translate: left + ' ' + top,
 				width: '400px'
 			},
 			component

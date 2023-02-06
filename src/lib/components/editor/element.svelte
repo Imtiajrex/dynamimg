@@ -55,12 +55,20 @@
 
 		//loop over styles object
 		for (const [key, value] of Object.entries(style)) {
-			if (key === 'width' || key === 'height') {
-				elementComponent.style[key] = value as string;
-			} else {
-				elementComponent.style.setProperty(key, value as string);
+			if (key == 'translate') {
+				const values = value.replaceAll('px', '').split(' ');
+				frame.translate = [Number(values[0]), Number(values[1])];
+				elementComponent.style.setProperty('transform', `translate(${values[0]}px,${values[1]}px)`);
+				continue;
 			}
+
+			elementComponent.style.setProperty(key, value as string);
 		}
+
+		elementComponent.style.setProperty(
+			'height',
+			elementComponent.getBoundingClientRect().height + 'px'
+		);
 		document.addEventListener('trix-change', (e: any) => {
 			element.content = e.target.innerHTML;
 		});
@@ -106,7 +114,6 @@
 			childMoving = false;
 			return;
 		}
-		console.log(droppedHierarchy, hierarchy);
 
 		childMoving = checkArrayEquals(droppedHierarchy, hierarchy);
 	};
@@ -123,8 +130,8 @@
 	import Moveable from 'svelte-moveable';
 	let target: HTMLElement;
 	type frameType = {
-		translate?: [number, number];
-		rotate?: number;
+		translate: [number, number];
+		rotate: number;
 	};
 	let frame = {
 		translate: [0, 0],
@@ -140,14 +147,21 @@
 			elementComponent.style.userSelect = edit ? 'auto' : 'none';
 		}
 	}
-	const setTranslate = ({ translate, rotate }: frameType) => {
+	const setTranslate = ({
+		translate,
+		rotate
+	}: {
+		translate?: [number, number];
+		rotate?: number;
+	}) => {
 		translate = translate || frame.translate;
 		rotate = rotate || frame.rotate;
 
 		return translate ? `translate(${translate[0]}px, ${translate[1]}px) rotate(${rotate}deg)` : '';
 	};
+	const isEditable = content ? true : false;
 	const onClick = (e: Event) => {
-		if (active) {
+		if (active && isEditable) {
 			edit = true;
 		}
 		if (isCtrlPressed.get()) {
@@ -158,6 +172,7 @@
 		customStyleContext.set({ style, id });
 		e.stopPropagation();
 	};
+
 	const isIcon = elementId == 'icon';
 </script>
 
@@ -179,9 +194,7 @@
 		<slot />
 		{#if contentfulElement.includes(elementId)}
 			{#if !edit}
-				<div class="select-none cursor-pointer">
-					{@html element.content}
-				</div>
+				{@html element.content}
 			{:else}
 				<trix-editor
 					style={`width:100%;height:100%;position:absolute;top:0;left:0;padding:0;min-height:0;border:none;${

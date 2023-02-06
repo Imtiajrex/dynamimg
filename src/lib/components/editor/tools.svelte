@@ -9,6 +9,7 @@
 	import {
 		IconAdjustments,
 		IconBold,
+		IconColorPicker,
 		IconDatabaseExport,
 		IconItalic,
 		IconList,
@@ -85,16 +86,20 @@
 		number: false,
 		bullet: false,
 		color: '',
-		backgroundColor: ''
+		backgroundColor: '',
+		fontSize: '',
+		fontFamily: ''
 	};
 	let attributes = { ...defaultAttributes };
-	const executeCommand = (command: string) => {
+	const executeCommand = (command: string, value?: string) => {
 		const element = document.querySelector('trix-editor') as HTMLElement;
 		console.log(element.editor, command);
 		if (attributes[command]) {
 			element.editor.deactivateAttribute(command);
 		} else {
-			element.editor.activateAttribute(command);
+			if (value) {
+				element.editor.activateAttribute(command, value);
+			} else element.editor.activateAttribute(command);
 		}
 		attributes[command] = !attributes[command];
 	};
@@ -106,9 +111,16 @@
 		attributes = { ...defaultAttributes };
 		prevVal = [...val];
 	});
+	const handleColorChange = (e: any, attribute: string) => {
+		executeCommand(attribute, e.target.value);
+	};
+	const fontSizes = Array.from(Array(125).keys()).map((i) => i + 10);
+	const handleFontSize = (e: any) => {
+		executeCommand('fontSize', e.target.value);
+	};
 </script>
 
-<div class="grid grid-cols-3 w-full my-4">
+<div class="grid grid-cols-3 w-full my-4 h-9 place-content-center">
 	<div class="flex items-center gap-2">
 		{#each tools as tool}
 			<ToolButton
@@ -122,6 +134,26 @@
 	</div>
 	<div class="flex items-center justify-center gap-2" id="toolbar">
 		{#if $selectedElement.length > 0}
+			<select class="select min-h-0 h-8" on:change={handleFontSize}>
+				<option disabled selected>Font Size</option>
+				{#each fontSizes as size}
+					<option value={size + 'px'}>{size}</option>
+				{/each}
+			</select>
+			<input
+				type="color"
+				class="w-8 h-8"
+				on:change={(e) => {
+					handleColorChange(e, 'backgroundColor');
+				}}
+			/>
+			<input
+				type="color"
+				class="w-8 h-8"
+				on:change={(e) => {
+					handleColorChange(e, 'color');
+				}}
+			/>
 			{#each editorTools as tool}
 				<ToolButton
 					onClick={() => executeCommand(tool.command)}
