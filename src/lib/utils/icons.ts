@@ -1,7 +1,27 @@
-export const getIcons = (offset = 0, limit = 50) => {
+export const getIcons = ({
+	offset = 0,
+	limit = 50,
+	search = ''
+}: {
+	offset?: number;
+	limit?: number;
+	search?: string;
+}) => {
+	let filteredIcons = iconNames;
+	if (search.length > 0) {
+		filteredIcons = filteredIcons.filter((icon) =>
+			icon.toLowerCase().includes(search.toLowerCase())
+		);
+	}
+	if (filteredIcons.length <= 15) {
+		console.log(filteredIcons);
+	}
 	const icons = [];
+	if (offset + limit > filteredIcons.length) {
+		limit = filteredIcons.length - offset;
+	}
 	for (let i = offset; i < offset + limit; i++) {
-		icons.push(iconNames[i]);
+		icons.push(filteredIcons[i]);
 	}
 	return icons;
 };
@@ -587,7 +607,7 @@ export const iconNames = [
 	'IconBrandGoogleDrive',
 	'IconBrandGoogleFit',
 	'IconBrandGoogleHome',
-	'IconBrandGoogle1',
+	'IconBrandGoogleOne',
 	'IconBrandGooglePhotos',
 	'IconBrandGooglePlay',
 	'IconBrandGooglePodcasts',

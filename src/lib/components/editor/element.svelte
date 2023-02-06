@@ -53,7 +53,14 @@
 		containerHeight = elementComponent.getBoundingClientRect().height;
 		desktopStyler = document.getElementById(`style_desktop_${id}`) as HTMLElement;
 
-		updateDeviceStyles();
+		//loop over styles object
+		for (const [key, value] of Object.entries(style)) {
+			if (key === 'width' || key === 'height') {
+				elementComponent.style[key] = value as string;
+			} else {
+				elementComponent.style.setProperty(key, value as string);
+			}
+		}
 		document.addEventListener('trix-change', (e: any) => {
 			element.content = e.target.innerHTML;
 		});
@@ -77,7 +84,6 @@
 		varStyle = '';
 		const { css, variables } = styleObjectToVariableBasedCss(style, id);
 
-		varStyle += variables;
 		updateStyle(css, device);
 	};
 	$: {
@@ -156,7 +162,7 @@
 </script>
 
 <span class="h-0 opacity-0 absolute">
-	<span id={`style_desktop_${id}`} />
+	<span id={`style_desktop_${id}`} class="h-0 opacity-0 absolute s-5Yyo_MKyH-nH" />
 </span>
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-mouse-events-have-key-events -->
@@ -173,10 +179,12 @@
 		<slot />
 		{#if contentfulElement.includes(elementId)}
 			{#if !edit}
-				{@html element.content}
+				<div class="select-none cursor-pointer">
+					{@html element.content}
+				</div>
 			{:else}
 				<trix-editor
-					style={`width:100%;height:100%;position:absolute;top:0;left:0;padding:0;${
+					style={`width:100%;height:100%;position:absolute;top:0;left:0;padding:0;min-height:0;border:none;${
 						edit ? '' : 'display: none;'
 					}`}
 					toolbar="toolbar"

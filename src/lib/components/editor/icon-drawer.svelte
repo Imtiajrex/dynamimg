@@ -7,10 +7,11 @@
 
 	import IntersectionObserver from 'svelte-intersection-observer';
 	import ElementCard from './element-card.svelte';
+	import Input from '../input.svelte';
 
 	let icons = [];
 	onMount(() => {
-		icons = getIcons();
+		icons = getIcons({});
 	});
 	let intersecting = false;
 	$: if (intersecting) {
@@ -18,15 +19,20 @@
 	}
 	const loadMore = () => {
 		console.log('load more');
-		icons = [...icons, ...getIcons(icons.length)];
+		icons = [...icons, ...getIcons({ offset: icons.length, search })];
 	};
 	export let show = false;
 	let intersection;
+	let search = '';
+	$: if (search) {
+		icons = getIcons({ search });
+	}
 </script>
 
 {#if show}
 	<Drawer className="top-0 left-0 max-w-sm rounded-r-xl overflow-auto ">
 		<h3 class="text-xl">Icons</h3>
+		<Input placeholder="Search For Icons" Icon={Icons.IconSearch} bind:value={search} />
 		<div class="flex justify-between gap-3 flex-wrap mt-5">
 			{#each icons as icon}
 				<ElementCard Icon={Icons[icon]} id={'icon'} component={Icons[icon]} />
