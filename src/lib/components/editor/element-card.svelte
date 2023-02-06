@@ -26,7 +26,8 @@
 				top: canvasRect.height / 2 + 'px',
 				left: canvasRect.width / 2 + 'px',
 				position: 'absolute',
-				transform: 'translate(-50%, -50%)'
+				transform: 'translate(-50%, -50%)',
+				width: '400px'
 			},
 			component
 		});
