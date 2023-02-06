@@ -1,16 +1,8 @@
 import { cloneDeep } from 'lodash';
 import { getContext, setContext } from 'svelte';
-import { SvelteElement } from 'svelte/internal';
-import { get, writable, type Writable } from 'svelte/store';
-import {
-	IconContainer,
-	IconCursorText,
-	IconHeading,
-	IconIcons,
-	IconLayoutGrid,
-	IconLetterP
-} from '@tabler/icons-svelte';
-import * as Icons from '@tabler/icons-svelte';
+import { writable, type Writable } from 'svelte/store';
+import { IconHeading, IconIcons, IconLetterP, IconBox, IconCircle } from '@tabler/icons-svelte';
+
 export const elementsList = [
 	{ Icon: IconHeading, name: 'Headline', id: 'heading' },
 	{ Icon: IconLetterP, name: 'Sub-Heading', id: 'paragraph' },
@@ -19,13 +11,23 @@ export const elementsList = [
 		name: 'Icon',
 		id: 'icon',
 		open: true
+	},
+	{
+		Icon: IconBox,
+		name: 'Box',
+		id: 'box'
+	},
+	{
+		Icon: IconCircle,
+		name: 'Circle',
+		id: 'circle'
 	}
 ] as { Icon: any; name: string; id: elementsKeyListType; open?: boolean }[];
 
 export type elementsKeyListType = 'heading' | 'paragraph' | 'icon';
 export type hierarchyType = string[];
 export type styleObjectType = {
-	[key: string]: string | styleObjectType;
+	[key: string]: string;
 };
 export type elementType = {
 	name: string;
@@ -48,7 +50,7 @@ export const getSelectedElement: () => Writable<string[]> = () => getContext('se
 type elementMapType = {
 	[key in elementsKeyListType]: {
 		name: string;
-		Component: any;
+		Component?: any;
 		content?: string;
 		style?: styleObjectType;
 		classname?: string;
@@ -67,6 +69,27 @@ const elementsMap = {
 		Component: 'div',
 		childEnabled: false,
 		content: 'This is a sub headline. It is used to write large chunks of text.'
+	},
+	box: {
+		name: 'Box',
+		Component: 'div',
+		childEnabled: false,
+		style: {
+			'background-color': 'rgba(60,194,251,1)',
+			width: '100px',
+			height: '100px'
+		}
+	},
+	circle: {
+		name: 'Circle',
+		Component: 'div',
+		childEnabled: false,
+		style: {
+			'background-color': 'rgba(60,194,251,1)',
+			width: '100px',
+			height: '100px',
+			'border-radius': '50%'
+		}
 	},
 	icon: {
 		name: 'Icon',
@@ -122,7 +145,7 @@ export const addElement = ({
 	if (!element.style) element.style = {};
 	else element.style = cloneDeep(element.style);
 	if (style) {
-		element.style = { ...element.style, ...style };
+		element.style = { ...style, ...element.style };
 	}
 	elements.update((elements) => {
 		if (hierarchy.length == 0) return [...elements, element];

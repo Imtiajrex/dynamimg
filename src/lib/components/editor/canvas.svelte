@@ -55,10 +55,16 @@
 				},
 				inheritable: 1
 			};
-			Trix.config.textAttributes.orderedList = {
-				parser: function (element: HTMLElement) {
-					return element.tagName === 'OL';
-				},
+			Trix.config.textAttributes.color = {
+				styleProperty: 'color',
+				inheritable: 1
+			};
+			Trix.config.textAttributes.backgroundColor = {
+				styleProperty: 'background-color',
+				inheritable: 1
+			};
+			Trix.config.textAttributes.fontSize = {
+				styleProperty: 'font-size',
 				inheritable: 1
 			};
 		});
