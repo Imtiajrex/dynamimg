@@ -10,3 +10,6 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 package-lock.json
 yarn.lock
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore

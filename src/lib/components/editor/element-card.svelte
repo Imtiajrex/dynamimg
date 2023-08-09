@@ -21,7 +21,7 @@
 		const canvas = document.getElementById('canvas') as HTMLElement;
 		const canvasRect = canvas.getBoundingClientRect();
 		const top = canvasRect.height / 2 + 'px';
-		const left = canvasRect.width / 2 + 'px';
+		const left = canvasRect.width / 2 - 50 + 'px';
 		addElement({
 			elementID: id,
 			style: {
