@@ -8,6 +8,9 @@
 
 	import {
 		IconAdjustments,
+		IconAlignCenter,
+		IconAlignLeft,
+		IconAlignRight,
 		IconBold,
 		IconColorPicker,
 		IconDatabaseExport,
@@ -76,8 +79,26 @@
 			name: 'Unordered List',
 			Icon: IconList,
 			command: 'bullet'
+		},
+		{
+			name: 'Align Left',
+			Icon: IconAlignLeft,
+			command: 'textAlign',
+			val: 'left'
+		},
+		{
+			name: 'Align Center',
+			Icon: IconAlignCenter,
+			command: 'textAlign',
+			val: 'center'
+		},
+		{
+			name: 'Align Right',
+			Icon: IconAlignRight,
+			command: 'textAlign',
+			val: 'right'
 		}
-	] as { name: string; Icon: any; command: string }[];
+	] as { name: string; Icon: any; command: string; val: string }[];
 	let elements = getElements();
 	let defaultAttributes = {
 		bold: false,
@@ -118,9 +139,12 @@
 	const handleFontSize = (e: any) => {
 		executeCommand('fontSize', e.target.value);
 	};
+	const handleAlignMent = (dir: string) => {
+		executeCommand('textAlign', dir);
+	};
 </script>
 
-<div class="grid grid-cols-3 w-full my-4 h-9 place-content-center">
+<div class="flex justify-between items-center w-full my-4 h-9 ">
 	<div class="flex items-center gap-2">
 		{#each tools as tool}
 			<ToolButton
@@ -132,7 +156,7 @@
 			/>
 		{/each}
 	</div>
-	<div class="flex items-center justify-center gap-2" id="toolbar">
+	<div class="flex items-center justify-center grid-flow-row gap-2" id="toolbar">
 		{#if $selectedElement.length > 0}
 			<select class="select min-h-0 h-8" on:change={handleFontSize}>
 				<option disabled selected>Font Size</option>
@@ -156,7 +180,7 @@
 			/>
 			{#each editorTools as tool}
 				<ToolButton
-					onClick={() => executeCommand(tool.command)}
+					onClick={() => executeCommand(tool.command, tool.val)}
 					Icon={tool.Icon}
 					active={attributes[tool.command]}
 				/>
