@@ -67,6 +67,10 @@
 				styleProperty: 'font-size',
 				inheritable: 1
 			};
+			Trix.config.textAttributes.textAlign = {
+				styleProperty: 'text-align',
+				inheritable: 1
+			};
 		});
 		document.addEventListener('trix-initialize', () => {
 			const toolbar = document.querySelector('trix-toolbar') as HTMLElement;
